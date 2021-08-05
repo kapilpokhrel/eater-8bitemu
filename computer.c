@@ -44,15 +44,14 @@ void ADD(uint8_t opcode,uint8_t current_microcode)
 			cpu.B = ram[cpu.MAR];
 			cpu.SUM = cpu.A + cpu.B;
 			
+			break;
+		case 4:
+			cpu.A = cpu.SUM;
 			// carry check
 			cpu.CY = ((cpu.A + cpu.B) > 255) ? 1:0;
 
 			//zero check
 			cpu.ZR = (cpu.SUM) ? 0:1;
-			
-			break;
-		case 4:
-			cpu.A = cpu.SUM;
 			break;
 		default:
 			break;
@@ -69,16 +68,19 @@ void SUB(uint8_t opcode,uint8_t current_microcode)
 		case 3:
 			cpu.B = ram[cpu.MAR];
 			cpu.SUM = cpu.A - cpu.B;
-			
-			// carry check
-			cpu.CY = (cpu.B > cpu.A) ? 1:0;
 
+			break;
+		case 4:
+			/* Ben eater's computer add the two's compliement of B with A for subtraction.*/
+			// carry check
+			uint8_t two_comp_of_B = ~cpu.B + 1;
+			cpu.CY = ((two_comp_of_B + cpu.A) > 255);
+
+			cpu.A = cpu.SUM;
+			
 			//zero check
 			cpu.ZR = (cpu.SUM) ? 0:1;
 			
-			break;
-		case 4:
-			cpu.A = cpu.SUM;
 			break;
 		default:
 			break;

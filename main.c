@@ -5,7 +5,7 @@
 
 int main()
 {
-	FILE* bin_file = fopen("programmes/jump.bin","r");
+	FILE* bin_file = fopen("programmes/product.bin","r");
 	if(bin_file == NULL){
 		fprintf(stderr,"Couldn't open binary file.");
 		exit(-1);
@@ -20,7 +20,7 @@ int main()
 		// For now halt end the program.
 		CPU_t cpu = get_cpu();
 		printf("OUT: %d\n",cpu.OUT);
-		sleep(1);
+		usleep(500);
 
 		if(cpu.HLT)
 			quit = 1;
