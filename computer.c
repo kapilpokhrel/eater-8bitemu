@@ -195,7 +195,7 @@ void load(FILE* bin_file)
 
 static uint8_t current_microcode;
 
-uint8_t execute()
+uint8_t clock()
 {	
 	if(!cpu.HLT) {
 		// each opcode is made up of 5 microcodes which takes 1 cycle each
@@ -220,4 +220,16 @@ uint8_t execute()
 		return 1;
 	} else
 		return 0;
+}
+
+uint8_t execute_ins()
+{
+	int first = 1;
+	while(current_microcode || first) {
+		first = 0;
+
+		if(clock() == 0)
+			return 0;
+	}
+	return 1;
 }

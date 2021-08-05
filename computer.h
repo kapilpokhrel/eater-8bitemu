@@ -23,6 +23,8 @@ void load(FILE* bin_file);
 //cpu information for debug information
 CPU_t get_cpu();
 
-uint8_t execute();
+uint8_t clock();
+
+uint8_t execute_ins();
 
 #endif
