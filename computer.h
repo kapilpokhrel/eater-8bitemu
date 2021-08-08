@@ -18,7 +18,8 @@ typedef struct {
 }CPU_t;
 
 //road the binary file into ram
-void load(FILE* bin_file);
+void load_from_bin(const char* filename);
+void load_from_asm(const char* filename);
 
 //cpu information for debug information
 CPU_t get_cpu();

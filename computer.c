@@ -1,5 +1,7 @@
 #include "computer.h"
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 typedef struct {
 	char* name;
@@ -189,8 +191,31 @@ CPU_t get_cpu()
 	return cpu;
 }
 
-void load(FILE* bin_file)
-{
+void load_from_bin(const char* filename)
+{	
+	FILE* bin_file = fopen(filename,"r");
+	if(bin_file == NULL){
+		fprintf(stderr,"Couldn't open binary file.");
+		exit(-1);
+	}
+
+	fread(ram,1,16,bin_file);
+	fclose(bin_file);
+	return;
+}
+
+void load_from_asm(const char* filename)
+{	
+	char command[20 + strlen(filename)];
+	strcat(command,"/bin/python3 asm.py ");
+	strcat(command,filename);
+
+	FILE* bin_file = popen(command,"r");
+	if(bin_file == NULL){
+		fprintf(stderr,"Couldn't open Assembly file.");
+		exit(-1);
+	}
+
 	fread(ram,1,16,bin_file);
 	return;
 }
