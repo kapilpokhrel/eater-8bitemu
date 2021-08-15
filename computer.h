@@ -23,6 +23,7 @@ void load_from_asm(const char* filename);
 
 //cpu information for debug information
 CPU_t get_cpu();
+uint8_t* get_memory();
 
 uint8_t clock();
 

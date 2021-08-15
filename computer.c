@@ -191,6 +191,13 @@ CPU_t get_cpu()
 	return cpu;
 }
 
+uint8_t* get_memory()
+{
+	uint8_t* memory = malloc(16);
+	memcpy(memory,ram,16);
+	return memory;
+}
+
 void load_from_bin(const char* filename)
 {	
 	FILE* bin_file = fopen(filename,"r");
