@@ -69,6 +69,10 @@ void manage_windows(WINDOW* main, WINDOW* out_win,WINDOW* cpu_win,WINDOW* mem_wi
 	/*
 		start_y + value or start_x + value
 		value depends of the width or height of window previous to it
+
+		for example:
+			height of output_window = 2
+			so, starting value of cpu_window which is below output_window = 3
 	*/
 	mvwin(out_win,start_y+0,start_x+1);
 	mvwin(cpu_win,start_y+3,start_x+1);
@@ -120,9 +124,7 @@ int main(int argc,char** argv)
 
 	/*
 		WINDOW* newwin(height,widht,y,x); newwin decleration
-		widht and height of the windows is magic number based on the dimensiono of info inside it.
-
-		If it looks confusing, change and see result.
+		width and height is managed by manage_windows function.
 	*/
 
 	// Output window
