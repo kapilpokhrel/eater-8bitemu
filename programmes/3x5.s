@@ -1,6 +1,6 @@
 top:
 	lda x
-	sub one
+	sub one ; sub subtracts the A from content of given memory address
 	jc continue
 	lda product
 	out
