@@ -267,3 +267,14 @@ uint8_t execute_ins()
 	}
 	return 1;
 }
+
+char* get_curr_ins()
+{	
+	INSTRUCTION_T curr_instruction = instructions[(cpu.IR & 0xf0) >> 4];
+	char* dis_instruction = malloc(10);
+	if(current_microcode < 2)
+		sprintf(dis_instruction,"Fetching...");
+	else
+		sprintf(dis_instruction,"%s %d",curr_instruction.name,cpu.IR & 0x0f);
+	return dis_instruction;
+}

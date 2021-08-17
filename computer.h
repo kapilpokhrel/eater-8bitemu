@@ -22,6 +22,7 @@ void load_from_bin(const char* filename);
 void load_from_asm(const char* filename);
 
 //cpu information for debug information
+char* get_curr_ins();
 CPU_t get_cpu();
 uint8_t* get_memory();
 

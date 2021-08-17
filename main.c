@@ -36,10 +36,19 @@ void print_memory(WINDOW* memory_window)
 	free(memory);
 }
 
+void print_instruction(WINDOW* ins_window)
+{
+	char* instruction = get_curr_ins();
+	mvwprintw(ins_window,0,1,"Current Instruction:");
+	mvwprintw(ins_window,1,1,"                    "); /*Clearing the previous instruction*/
+	mvwprintw(ins_window,1,1," %s",instruction);
+	free(instruction);
+}
+
 void print_usage(WINDOW* usage_window)
 {
 	mvwprintw(usage_window,0,1,"USAGE:");
-	mvwprintw(usage_window,1,1," [c][CLOCK] [s][STEP INSTRUCTION]");
+	mvwprintw(usage_window,1,1," [c][CLOCK] [s][STEP INSTRUCTION] [q][Exit]");
 }
 
 int main(int argc,char** argv)
@@ -82,22 +91,26 @@ int main(int argc,char** argv)
 	int y,x;
 	getmaxyx(def_win,y,x);
 
-	WINDOW* main_window = newwin(20,54,y/2-10,x/2-26);
+	WINDOW* main_window = newwin(24,54,y/2-12,x/2-26);
 	box(main_window,0,0);
 	mvwprintw(main_window,0,1,"Eater's 8 bit computer:");
 	
 	// Output window
-	WINDOW* out_win = derwin(main_window,3,10,1,2);
+	WINDOW* out_win = derwin(main_window,3,10,2,2);
 	box(out_win,0,0);
 	// Cpu window
-	WINDOW* cpu_win = derwin(main_window,12,35,4,2);
+	WINDOW* cpu_win = derwin(main_window,12,35,5,2);
 	box(cpu_win,0,0);
 	// Memory window
-	WINDOW* mem_win = derwin(main_window,18,12,1,40);
+	WINDOW* mem_win = derwin(main_window,18,12,2,40);
 	box(mem_win,0,0);
+	// Instruction window
+	WINDOW* ins_win = derwin(main_window,3,35,17,2);
+	box(ins_win,0,0);
 	// Usage window
-	WINDOW* usage_win = derwin(main_window,3,35,16,2);
+	WINDOW* usage_win = derwin(main_window,3,50,20,2);
 	box(usage_win,0,0);
+	print_usage(usage_win);
 
 	PANEL* main_panel = new_panel(main_window);
 
@@ -116,7 +129,7 @@ int main(int argc,char** argv)
 		print_memory(mem_win);
 
 		// Usage Information
-		print_usage(usage_win);
+		print_instruction(ins_win);
 
 		// Update panel and show it
 		update_panels();
@@ -133,7 +146,7 @@ int main(int argc,char** argv)
 		
 		// Always center the window
 		getmaxyx(def_win,y,x);
-		move_panel(main_panel,y/2-10,x/2-26);
+		move_panel(main_panel,y/2-12,x/2-26);
 	}
 	
 	// ncurses end
