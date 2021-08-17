@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g
-LDFLAGS = -lncurses
+LDFLAGS = -lncurses -lpanel
 
 BUILD_DIR := ./objs
 SOURCES := $(wildcard *.c)

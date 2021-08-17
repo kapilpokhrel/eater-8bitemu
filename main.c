@@ -3,13 +3,12 @@
 #include "computer.h"
 #include <unistd.h>
 #include <ncurses.h>
+#include <panel.h>
 
 void print_output(WINDOW* output_window,uint8_t value)
 {
 	mvwprintw(output_window,0,1,"OUTPUT:");
 	mvwprintw(output_window,1,1," %03d ",value);
-	
-	wrefresh(output_window);
 }
 
 void print_cpu(WINDOW* cpu_window,CPU_t cpu) 
@@ -25,8 +24,6 @@ void print_cpu(WINDOW* cpu_window,CPU_t cpu)
 	mvwprintw(cpu_window,8,1," Carry flag: %d",cpu.CY);
 	mvwprintw(cpu_window,9,1," Zero flag: %d",cpu.ZR);
 	mvwprintw(cpu_window,10,1," HLT flag: %d",cpu.HLT);
-
-	wrefresh(cpu_window);
 }
 
 void print_memory(WINDOW* memory_window)
@@ -37,54 +34,12 @@ void print_memory(WINDOW* memory_window)
 		mvwprintw(memory_window,i,1," %02d: %03d",i-1,memory[i-1]);
 	}
 	free(memory);
-
-	wrefresh(memory_window);
 }
 
 void print_usage(WINDOW* usage_window)
 {
 	mvwprintw(usage_window,0,1,"USAGE:");
 	mvwprintw(usage_window,1,1," [c][CLOCK] [s][STEP INSTRUCTION]");
-	
-	wrefresh(usage_window);
-}
-
-void manage_windows(WINDOW* main, WINDOW* out_win,WINDOW* cpu_win,WINDOW* mem_win,WINDOW* usage_win)
-{	
-	refresh();
-
-	int main_x, main_y;
-	getmaxyx(main,main_y,main_x);
-	int start_x, start_y;
-
-	// To justify the windows at center
-	start_x = main_x/2 - 25; // width of whole content is 50
-	start_y = main_y/2 - 9; // height of whole content is 18
-
-	box(out_win,0,0);
-	box(cpu_win,0,0);
-	box(mem_win,0,0);
-	box(usage_win,0,0);
-
-	/*
-		start_y + value or start_x + value
-		value depends of the width or height of window previous to it
-
-		for example:
-			height of output_window = 2
-			so, starting value of cpu_window which is below output_window = 3
-	*/
-	mvwin(out_win,start_y+0,start_x+1);
-	mvwin(cpu_win,start_y+3,start_x+1);
-	mvwin(mem_win,start_y+0,start_x+38);
-	mvwin(usage_win,start_y+15,start_x+1);
-
-	wrefresh(cpu_win);
-	wrefresh(out_win);
-	wrefresh(mem_win);
-	wrefresh(usage_win);
-
-	refresh();
 }
 
 int main(int argc,char** argv)
@@ -120,32 +75,37 @@ int main(int argc,char** argv)
 	
 	// ncurses init
 	WINDOW* def_win = initscr();
+	cbreak();
 	noecho();
 
-	/*
-		WINDOW* newwin(height,widht,y,x); newwin decleration
-		width and height is managed by manage_windows function.
-	*/
+	// Get screen size
+	int y,x;
+	getmaxyx(def_win,y,x);
 
+	WINDOW* main_window = newwin(20,54,y/2-10,x/2-26);
+	box(main_window,0,0);
+	mvwprintw(main_window,0,1,"Eater's 8 bit computer:");
+	
 	// Output window
-	WINDOW* out_win = newwin(3,10,0,0);	
+	WINDOW* out_win = derwin(main_window,3,10,1,2);
+	box(out_win,0,0);
 	// Cpu window
-	WINDOW* cpu_win = newwin(12,35,0,0);	
+	WINDOW* cpu_win = derwin(main_window,12,35,4,2);
+	box(cpu_win,0,0);
 	// Memory window
-	WINDOW* mem_win = newwin(18,12,0,0);
+	WINDOW* mem_win = derwin(main_window,18,12,1,40);
+	box(mem_win,0,0);
 	// Usage window
-	WINDOW* usage_win = newwin(3,35,0,0);
+	WINDOW* usage_win = derwin(main_window,3,35,16,2);
+	box(usage_win,0,0);
 
-	manage_windows(def_win,out_win,cpu_win,mem_win,usage_win);
-	print_usage(usage_win);
-	
+	PANEL* main_panel = new_panel(main_window);
+
 	int quit = 0;
-
 	while(!quit) {
-		manage_windows(def_win,out_win,cpu_win,mem_win,usage_win);
-
+		//manage_windows(def_win,out_win,cpu_win,mem_win,usage_win);
 		CPU_t cpu = get_cpu();
-	
+
 		// OUTPUT
 		print_output(out_win,cpu.OUT);
 		
@@ -155,7 +115,15 @@ int main(int argc,char** argv)
 		// MEMORY INFORMATION
 		print_memory(mem_win);
 
-		char ch = getch();
+		// Usage Information
+		print_usage(usage_win);
+
+		// Update panel and show it
+		update_panels();
+		doupdate();
+
+		refresh();
+		char ch = wgetch(main_window);
 		if(ch == 'c')
 			clock();
 		else if(ch == 's')
@@ -163,7 +131,9 @@ int main(int argc,char** argv)
 		else if(ch == 'q')
 			quit = 1;
 		
-		clear();
+		// Always center the window
+		getmaxyx(def_win,y,x);
+		move_panel(main_panel,y/2-10,x/2-26);
 	}
 	
 	// ncurses end
