@@ -8,8 +8,8 @@ This is complete [ben eater's 8 bit breadboard computer](https://www.youtube.com
 ## Installing
 Ncurses should be installed. (It is probably already installed.)
 ```
-git clone emu.git
-cd emu
+git clone https://github.com/kapilpokhrel/eater-8bitemu.git
+cd eater-8bitemu
 make
 ```
 ## Usage
