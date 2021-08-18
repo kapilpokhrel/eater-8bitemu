@@ -4,7 +4,7 @@ This is complete [ben eater's 8 bit breadboard computer](https://www.youtube.com
 ## Featerus
 - Ncurses graphics
 - Assembler (You can directly load assembly file)
-- Allows to step through each instruction or each clock pulse
+- Allows to step through each instruction or each clock pulse (each microcode)
 - Shows CPU information and memory contents
 ## Installing
 Ncurses should be installed. (It is probably already installed.)
@@ -45,3 +45,9 @@ product:0
 x:	3
 y:	5
 ```
+# TODO
+- [x] Complete Emulation with all instruction
+- [x] Assembler
+- [x] Step through each microcode
+- [x] Ncurses Output
+- [ ] Option to change memory contents and register value.
