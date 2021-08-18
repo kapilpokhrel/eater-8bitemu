@@ -5,6 +5,7 @@ This is complete [ben eater's 8 bit breadboard computer](https://www.youtube.com
 - Ncurses graphics
 - Assembler (You can directly load assembly file)
 - Allows to step through each instruction or each clock pulse
+- Shows CPU information and memory contents
 ## Installing
 Ncurses should be installed. (It is probably already installed.)
 ```
