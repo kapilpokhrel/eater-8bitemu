@@ -15,7 +15,7 @@ typedef struct {
 	uint8_t CY; // Carry flag
 	uint8_t ZR; // Zero flag
 	uint8_t HLT;
-}CPU_t;
+}Cpu;
 
 //road the binary file into ram
 void load_from_bin(const char* filename);
@@ -23,7 +23,7 @@ void load_from_asm(const char* filename);
 
 //cpu information for debug information
 char* get_curr_ins();
-CPU_t get_cpu();
+Cpu get_cpu();
 uint8_t* get_memory();
 
 uint8_t clock();

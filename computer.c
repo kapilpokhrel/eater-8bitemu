@@ -10,9 +10,9 @@ typedef struct {
 	// Opocde takes current_microcode as argument and do different things based on it
 	void (*operation)(uint8_t opcode,uint8_t current_microcode);
 
-}INSTRUCTION_T;
+}InstructionList;
 
-static CPU_t cpu;
+static Cpu cpu;
 uint8_t ram[16];
 
 //instuctions
@@ -181,12 +181,12 @@ void HLT(uint8_t opcode,uint8_t current_microcode)
 
 //list of all the available opcodes
 
-INSTRUCTION_T instructions[16] = {
+InstructionList instructions[16] = {
 	{"NOP",NOP},{"LDA",LDA},{"ADD",ADD},{"SUB",SUB},{"STA",STA},{"LDI",LDI},{"JMP",JMP},{"JC",JC},
 	{"JZ",JZ},{"---",NOP},{"---",NOP},{"---",NOP},{"---",NOP},{"---",NOP},{"OUT",OUT},{"HLT",HLT}
 };
 
-CPU_t get_cpu()
+Cpu get_cpu()
 {
 	return cpu;
 }
@@ -270,7 +270,7 @@ uint8_t execute_ins()
 
 char* get_curr_ins()
 {	
-	INSTRUCTION_T curr_instruction = instructions[(cpu.IR & 0xf0) >> 4];
+	InstructionList curr_instruction = instructions[(cpu.IR & 0xf0) >> 4];
 	char* dis_instruction = malloc(10);
 	if(current_microcode < 2)
 		sprintf(dis_instruction,"Fetching...");

@@ -11,7 +11,7 @@ void print_output(WINDOW* output_window,uint8_t value)
 	mvwprintw(output_window,1,1," %03d ",value);
 }
 
-void print_cpu(WINDOW* cpu_window,CPU_t cpu) 
+void print_cpu(WINDOW* cpu_window,Cpu cpu) 
 {
 	mvwprintw(cpu_window,0,1,"CPU INFORMATION:");
 	mvwprintw(cpu_window,1,1," Program Counter: 0x%x",cpu.PC);
@@ -117,7 +117,7 @@ int main(int argc,char** argv)
 	int quit = 0;
 	while(!quit) {
 		//manage_windows(def_win,out_win,cpu_win,mem_win,usage_win);
-		CPU_t cpu = get_cpu();
+		Cpu cpu = get_cpu();
 
 		// OUTPUT
 		print_output(out_win,cpu.OUT);
