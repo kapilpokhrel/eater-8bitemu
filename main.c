@@ -142,6 +142,9 @@ int main(int argc,char** argv)
 
 		refresh();
 		int ch = wgetch(main_window);
+		uint8_t* memory = get_memory();
+		uint8_t selected_value = memory[selected_address];
+
 		if(ch == 'c')
 			clock();
 		else if(ch == 's')
@@ -156,6 +159,15 @@ int main(int argc,char** argv)
 			if(selected_address != 15)
 				selected_address += 1;
 		}
+		else if(ch == KEY_RIGHT) {
+			if(selected_value != 255)
+				set_memory(selected_address, selected_value + 1);
+		}
+		else if(ch == KEY_LEFT) {
+			if(selected_value != 0)
+				set_memory(selected_address, selected_value - 1);
+		}
+
 		
 		// Always center the window
 		getmaxyx(def_win,y,x);

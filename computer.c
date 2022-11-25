@@ -198,6 +198,11 @@ uint8_t* get_memory()
 	return memory;
 }
 
+void set_memory(uint8_t address, uint8_t value)
+{
+	ram[address] = value;
+}
+
 void load_from_bin(const char* filename)
 {	
 	FILE* bin_file = fopen(filename,"r");

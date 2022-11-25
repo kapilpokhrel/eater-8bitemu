@@ -25,6 +25,7 @@ void load_from_asm(const char* filename);
 char* get_curr_ins();
 Cpu get_cpu();
 uint8_t* get_memory();
+void set_memory(uint8_t address, uint8_t value);
 
 uint8_t clock();
 
