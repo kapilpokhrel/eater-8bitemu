@@ -26,12 +26,15 @@ void print_cpu(WINDOW* cpu_window,Cpu cpu)
 	mvwprintw(cpu_window,10,1," HLT flag: %d",cpu.HLT);
 }
 
-void print_memory(WINDOW* memory_window)
+void print_memory(WINDOW* memory_window, uint8_t selected_address)
 {	
 	uint8_t* memory = get_memory();
 	mvwprintw(memory_window,0,1,"MEMORY:");
-	for(int i = 1; i <= 16; i++) {
-		mvwprintw(memory_window,i,1," %02d: %03d",i-1,memory[i-1]);
+	for(int i = 0; i < 16; i++) {
+		if(i == selected_address)
+			wattron(memory_window, A_STANDOUT);
+		mvwprintw(memory_window,i+1,1," %02d: %03d",i,memory[i]);
+		wattroff(memory_window, A_STANDOUT);
 	}
 	free(memory);
 }
@@ -92,6 +95,7 @@ int main(int argc,char** argv)
 	getmaxyx(def_win,y,x);
 
 	WINDOW* main_window = newwin(24,54,y/2-12,x/2-26);
+	keypad(main_window, true);
 	box(main_window,0,0);
 	mvwprintw(main_window,0,1,"Eater's 8 bit computer:");
 	
@@ -114,7 +118,8 @@ int main(int argc,char** argv)
 
 	PANEL* main_panel = new_panel(main_window);
 
-	int quit = 0;
+	uint8_t quit = 0;
+	uint8_t selected_address = 0;
 	while(!quit) {
 		//manage_windows(def_win,out_win,cpu_win,mem_win,usage_win);
 		Cpu cpu = get_cpu();
@@ -126,7 +131,7 @@ int main(int argc,char** argv)
 		print_cpu(cpu_win,cpu);
 	
 		// MEMORY INFORMATION
-		print_memory(mem_win);
+		print_memory(mem_win, selected_address);
 
 		// Usage Information
 		print_instruction(ins_win);
@@ -136,13 +141,21 @@ int main(int argc,char** argv)
 		doupdate();
 
 		refresh();
-		char ch = wgetch(main_window);
+		int ch = wgetch(main_window);
 		if(ch == 'c')
 			clock();
 		else if(ch == 's')
 			execute_ins();
 		else if(ch == 'q')
 			quit = 1;
+		else if(ch == KEY_UP) {
+			if(selected_address != 0)
+				selected_address -= 1;
+		}
+		else if(ch == KEY_DOWN) {
+			if(selected_address != 15)
+				selected_address += 1;
+		}
 		
 		// Always center the window
 		getmaxyx(def_win,y,x);
