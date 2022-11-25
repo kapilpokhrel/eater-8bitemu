@@ -33,7 +33,7 @@ void print_memory(WINDOW* memory_window, uint8_t selected_address)
 	for(int i = 0; i < 16; i++) {
 		if(i == selected_address)
 			wattron(memory_window, A_STANDOUT);
-		mvwprintw(memory_window,i+1,1," %02d: %03d",i,memory[i]);
+		mvwprintw(memory_window,i+1,1," %02d: %03d ",i,memory[i]);
 		wattroff(memory_window, A_STANDOUT);
 	}
 	free(memory);
@@ -51,7 +51,7 @@ void print_instruction(WINDOW* ins_window)
 void print_usage(WINDOW* usage_window)
 {
 	mvwprintw(usage_window,0,1,"USAGE:");
-	mvwprintw(usage_window,1,1," [c][CLOCK] [s][STEP INSTRUCTION] [q][Exit]");
+	mvwprintw(usage_window,1,1," [c][CLOCK] [s][STEP INSTRUCTION] [q][Exit] [e][Edit]");
 }
 
 int main(int argc,char** argv)
@@ -94,7 +94,7 @@ int main(int argc,char** argv)
 	int y,x;
 	getmaxyx(def_win,y,x);
 
-	WINDOW* main_window = newwin(24,54,y/2-12,x/2-26);
+	WINDOW* main_window = newwin(24,60,y/2-12,x/2-30);
 	keypad(main_window, true);
 	box(main_window,0,0);
 	mvwprintw(main_window,0,1,"Eater's 8 bit computer:");
@@ -106,13 +106,13 @@ int main(int argc,char** argv)
 	WINDOW* cpu_win = derwin(main_window,12,35,5,2);
 	box(cpu_win,0,0);
 	// Memory window
-	WINDOW* mem_win = derwin(main_window,18,12,2,40);
+	WINDOW* mem_win = derwin(main_window,18,11,2,47);
 	box(mem_win,0,0);
 	// Instruction window
 	WINDOW* ins_win = derwin(main_window,3,35,17,2);
 	box(ins_win,0,0);
 	// Usage window
-	WINDOW* usage_win = derwin(main_window,3,50,20,2);
+	WINDOW* usage_win = derwin(main_window,3,56,20,2);
 	box(usage_win,0,0);
 	print_usage(usage_win);
 
@@ -120,6 +120,7 @@ int main(int argc,char** argv)
 
 	uint8_t quit = 0;
 	uint8_t selected_address = 0;
+	uint8_t edit = 0;
 	while(!quit) {
 		//manage_windows(def_win,out_win,cpu_win,mem_win,usage_win);
 		Cpu cpu = get_cpu();
@@ -131,7 +132,7 @@ int main(int argc,char** argv)
 		print_cpu(cpu_win,cpu);
 	
 		// MEMORY INFORMATION
-		print_memory(mem_win, selected_address);
+		print_memory(mem_win, edit?selected_address:-1);
 
 		// Usage Information
 		print_instruction(ins_win);
@@ -151,19 +152,21 @@ int main(int argc,char** argv)
 			execute_ins();
 		else if(ch == 'q')
 			quit = 1;
-		else if(ch == KEY_UP) {
+		else if(ch == 'e')
+			edit ^= 1;
+		else if(ch == KEY_UP && edit) {
 			if(selected_address != 0)
 				selected_address -= 1;
 		}
-		else if(ch == KEY_DOWN) {
+		else if(ch == KEY_DOWN && edit) {
 			if(selected_address != 15)
 				selected_address += 1;
 		}
-		else if(ch == KEY_RIGHT) {
+		else if(ch == KEY_RIGHT && edit) {
 			if(selected_value != 255)
 				set_memory(selected_address, selected_value + 1);
 		}
-		else if(ch == KEY_LEFT) {
+		else if(ch == KEY_LEFT && edit) {
 			if(selected_value != 0)
 				set_memory(selected_address, selected_value - 1);
 		}
@@ -171,7 +174,7 @@ int main(int argc,char** argv)
 		
 		// Always center the window
 		getmaxyx(def_win,y,x);
-		move_panel(main_panel,y/2-12,x/2-26);
+		move_panel(main_panel,y/2-12,x/2-30);
 	}
 	
 	// ncurses end
