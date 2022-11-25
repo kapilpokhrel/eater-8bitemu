@@ -277,8 +277,11 @@ char* get_curr_ins()
 {	
 	InstructionList curr_instruction = instructions[(cpu.IR & 0xf0) >> 4];
 	char* dis_instruction = malloc(10);
-	if(current_microcode < 2)
-		sprintf(dis_instruction,"Fetching...");
+	if(current_microcode < 2) {
+		uint8_t next_IR = ram[cpu.PC];
+		InstructionList next_instruction = instructions[(next_IR & 0xf0) >> 4];
+		sprintf(dis_instruction,"Fetching...(%s %d)", next_instruction.name, next_IR & 0x0f);
+	}
 	else
 		sprintf(dis_instruction,"%s %d",curr_instruction.name,cpu.IR & 0x0f);
 	return dis_instruction;
